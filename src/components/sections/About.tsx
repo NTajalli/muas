@@ -38,7 +38,7 @@ const SuasLink = styled.a`
   }
 `;
 
-const About = () => {
+const About: React.FC = () => {
   return (
     <AboutSection>
       <SectionTitle>About Our Team</SectionTitle>

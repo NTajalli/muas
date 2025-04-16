@@ -1,5 +1,5 @@
-import React from 'react';
-import styled, { keyframes } from 'styled-components';
+import React, { useEffect, useRef } from 'react';
+import styled, { keyframes, css } from 'styled-components';
 import droneBackground from '../../assets/images/drone_background.png';
 
 const fadeIn = keyframes`
@@ -231,6 +231,21 @@ const ScrollText = styled.span`
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 `;
 
+const scrollAnimation = keyframes`
+  0% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, 15px);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, 15px);
+  }
+`;
+
 const ScrollIcon = styled.div`
   width: 30px;
   height: 50px;
@@ -249,54 +264,176 @@ const ScrollIcon = styled.div`
     background-color: white;
     border-radius: 50%;
     transform: translateX(-50%);
-    animation: scrollAnimation 2s infinite;
-  }
-  
-  @keyframes scrollAnimation {
-    0% {
-      opacity: 1;
-      transform: translate(-50%, 0);
-    }
-    50% {
-      opacity: 1;
-      transform: translate(-50%, 15px);
-    }
-    100% {
-      opacity: 0;
-      transform: translate(-50%, 15px);
-    }
+    animation: ${scrollAnimation} 2s infinite;
   }
 `;
 
-const Hero = () => {
-  const scrollToContent = () => {
+const DronePathOverlay = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.6;
+`;
+
+const moveAlong = keyframes`
+  0% {
+    stroke-dashoffset: 1000;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+`;
+
+const pulseDot = keyframes`
+  0% {
+    transform: scale(0.8);
+    opacity: 0.3;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(0.8);
+    opacity: 0.3;
+  }
+`;
+
+const droneFly = keyframes`
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate(20px, -15px) rotate(5deg);
+  }
+  50% {
+    transform: translate(0, -30px) rotate(0deg);
+  }
+  75% {
+    transform: translate(-20px, -15px) rotate(-5deg);
+  }
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+`;
+
+const StyledAnimatedPath = styled.path`
+  animation: ${moveAlong} 15s infinite linear;
+`;
+
+interface StyledPulsingCircleProps {
+  animationDelay?: string;
+}
+
+const StyledPulsingCircle = styled.circle<StyledPulsingCircleProps>`
+  animation: ${pulseDot} 3s infinite ease-in-out;
+  animation-delay: ${props => props.animationDelay || '0s'};
+`;
+
+const StyledFlyingGroup = styled.g`
+  animation: ${droneFly} 8s infinite ease-in-out;
+  transform-origin: center;
+  transform-box: fill-box;
+`;
+
+const Hero: React.FC = () => {
+  const svgRef = useRef<SVGSVGElement | null>(null);
+  
+  const scrollToContent = (): void => {
     window.scrollTo({
       top: window.innerHeight,
       behavior: 'smooth'
     });
   };
+  
+  useEffect(() => {
+    const animateDrone = (): void => {
+      if (svgRef.current) {
+        const dronePath = svgRef.current.querySelector('#dronePath') as SVGPathElement;
+        if (dronePath) {
+          const pathLength = dronePath.getTotalLength();
+          dronePath.style.strokeDasharray = pathLength.toString();
+          dronePath.style.strokeDashoffset = pathLength.toString();
+        }
+      }
+    };
+    
+    animateDrone();
+  }, []);
 
   return (
     <HeroContainer>
+      <DronePathOverlay>
+        <svg ref={svgRef} width="100%" height="100%" viewBox="0 0 1000 800" xmlns="http://www.w3.org/2000/svg">
+          <StyledAnimatedPath 
+            id="dronePath" 
+            d="M100,400 C150,200 300,100 500,300 S750,600 900,400" 
+            fill="none" 
+            stroke="rgba(255,255,255,0.4)" 
+            strokeWidth="3" 
+            strokeDasharray="1000"
+            strokeLinecap="round"
+          />
+          
+          {/* Waypoint markers */}
+          <StyledPulsingCircle 
+            cx="100" 
+            cy="400" 
+            r="8" 
+            fill="rgba(226,24,51,0.8)" 
+          />
+          <StyledPulsingCircle 
+            cx="500" 
+            cy="300" 
+            r="8" 
+            fill="rgba(226,24,51,0.8)" 
+            animationDelay="1s"
+          />
+          <StyledPulsingCircle 
+            cx="900" 
+            cy="400" 
+            r="8" 
+            fill="rgba(226,24,51,0.8)" 
+            animationDelay="2s"
+          />
+          
+          {/* Drone icon */}
+          <StyledFlyingGroup>
+            <path d="M500,150 L515,165 L500,180 L485,165 Z" fill="white" />
+            <circle cx="500" cy="165" r="5" fill="rgba(226,24,51,1)" />
+          </StyledFlyingGroup>
+          
+          {/* Grid lines for map effect */}
+          <path d="M0,200 H1000" stroke="rgba(255,255,255,0.1)" strokeWidth="1" strokeDasharray="5,5" />
+          <path d="M0,400 H1000" stroke="rgba(255,255,255,0.1)" strokeWidth="1" strokeDasharray="5,5" />
+          <path d="M0,600 H1000" stroke="rgba(255,255,255,0.1)" strokeWidth="1" strokeDasharray="5,5" />
+          <path d="M200,0 V800" stroke="rgba(255,255,255,0.1)" strokeWidth="1" strokeDasharray="5,5" />
+          <path d="M400,0 V800" stroke="rgba(255,255,255,0.1)" strokeWidth="1" strokeDasharray="5,5" />
+          <path d="M600,0 V800" stroke="rgba(255,255,255,0.1)" strokeWidth="1" strokeDasharray="5,5" />
+          <path d="M800,0 V800" stroke="rgba(255,255,255,0.1)" strokeWidth="1" strokeDasharray="5,5" />
+        </svg>
+      </DronePathOverlay>
+      
       <HeroContent>
         <HeroTitleContainer>
           <HeroSupertitle>University of Maryland</HeroSupertitle>
-          <HeroTitle>
-            Unmanned Aerial Systems (MUAS) Team
-          </HeroTitle>
+          <HeroTitle>Unmanned Aerial Systems Team</HeroTitle>
         </HeroTitleContainer>
         <HeroSubtitle>
-          Pushing the boundaries of autonomous flight technology through innovation, 
-          competition, and education.
+          Building the future of autonomous flight through innovation, competition, and education
         </HeroSubtitle>
         <HeroButtons>
-          <PrimaryButton href="/about">Learn More</PrimaryButton>
-          <SecondaryButton href="/contact">Join Our Team</SecondaryButton>
+          <PrimaryButton href="#contact">Join Our Team</PrimaryButton>
+          <SecondaryButton href="#about">Learn More</SecondaryButton>
         </HeroButtons>
       </HeroContent>
       
       <ScrollIndicator onClick={scrollToContent}>
-        <ScrollText>Scroll Down</ScrollText>
+        <ScrollText>Explore</ScrollText>
         <ScrollIcon />
       </ScrollIndicator>
     </HeroContainer>

@@ -29,7 +29,7 @@ const PageDescription = styled.p`
   }
 `;
 
-const ContactPage = () => {
+const ContactPage: React.FC = () => {
   return (
     <>
       <PageBanner>

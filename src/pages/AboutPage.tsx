@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import News from '../components/sections/News';
+import About from '../components/sections/About';
+import SuasCompetition from '../components/sections/SuasCompetition';
+import Team from '../components/sections/Team';
 
 const PageBanner = styled.div`
   background-color: #f5f5f5;
@@ -29,19 +31,21 @@ const PageDescription = styled.p`
   }
 `;
 
-const NewsPage = () => {
+const AboutPage: React.FC = () => {
   return (
     <>
       <PageBanner>
-        <PageTitle>News & Updates</PageTitle>
+        <PageTitle>About Us</PageTitle>
         <PageDescription>
-          Stay up to date with the latest developments, achievements, and announcements
-          from the University of Maryland Unmanned Aerial Systems Team.
+          Learn more about the University of Maryland Unmanned Aerial Systems Team and our mission
+          to push the boundaries of autonomous flight technology.
         </PageDescription>
       </PageBanner>
-      <News />
+      <About />
+      <SuasCompetition />
+      <Team />
     </>
   );
 };
 
-export default NewsPage; 
+export default AboutPage; 

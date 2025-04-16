@@ -8,6 +8,12 @@ import ishmaelImage from '../../assets/images/Ishmael_Agui.png';
 import michaelChunImage from '../../assets/images/Michael_Chun.png';
 import brianImage from '../../assets/images/Brian_Tran.png';
 
+interface TeamMemberProps {
+  name: string;
+  role: string;
+  image: string;
+}
+
 const TeamSection = styled.section`
   max-width: 1200px;
   margin: 4rem auto;
@@ -87,8 +93,8 @@ const SubteamTitle = styled.h3`
   text-align: center;
 `;
 
-const Team = () => {
-  const executiveMembers = [
+const Team: React.FC = () => {
+  const executiveMembers: TeamMemberProps[] = [
     {
       name: 'Matthew Chmielewski',
       role: 'President',
@@ -111,7 +117,7 @@ const Team = () => {
     }
   ];
 
-  const subteamLeads = [
+  const subteamLeads: TeamMemberProps[] = [
     {
       name: 'Ishmael Agui',
       role: 'Hardware Lead',
@@ -124,7 +130,7 @@ const Team = () => {
     },
     {
       name: 'Brian Tran',
-      role: 'Airframe Lead',
+      role: 'Operations and Aquisitions Manager',
       image: brianImage
     }
   ];

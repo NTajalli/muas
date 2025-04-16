@@ -32,7 +32,7 @@ const PageDescription = styled.p`
   }
 `;
 
-const SponsorPage = () => {
+const SponsorPage: React.FC = () => {
   return (
     <>
       <PageBanner>

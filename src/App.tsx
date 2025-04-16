@@ -26,7 +26,7 @@ const ContentContainer = styled.main`
   flex: 1;
 `;
 
-function App() {
+const App: React.FC = () => {
   return (
     <Router>
       <AppContainer>
@@ -46,4 +46,4 @@ function App() {
   );
 }
 
-export default App;
+export default App; 

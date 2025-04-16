@@ -1,6 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, ChangeEvent, FormEvent } from 'react';
 import styled from 'styled-components';
 import emailjs from '@emailjs/browser';
+
+interface FormData {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+}
+
+type SubmitStatusType = 'success' | 'error' | null;
 
 const ContactSection = styled.section`
   max-width: 1200px;
@@ -218,22 +227,22 @@ const ErrorMessage = styled.div`
   font-weight: 500;
 `;
 
-const Contact = () => {
-  const [formData, setFormData] = useState({
+const Contact: React.FC = () => {
+  const [formData, setFormData] = useState<FormData>({
     name: '',
     email: '',
     subject: '',
     message: ''
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [submitStatus, setSubmitStatus] = useState<SubmitStatusType>(null);
 
-  const handleChange = (e) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
     const { id, value } = e.target;
     setFormData(prevData => ({ ...prevData, [id]: value }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     setIsSubmitting(true);
     setSubmitStatus(null);

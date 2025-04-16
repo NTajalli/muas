@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FormEvent } from 'react';
 import styled from 'styled-components';
 import droneBackground from '../../assets/images/drone_background.png';
 
@@ -88,7 +88,12 @@ const SubscribeButton = styled.button`
   }
 `;
 
-const News = () => {
+const News: React.FC = () => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
+    e.preventDefault();
+    // Handle form submission logic here
+  };
+
   return (
     <NewsSection>
       <SectionTitle>Latest News</SectionTitle>
@@ -99,7 +104,7 @@ const News = () => {
           Stay tuned for updates on our progress, achievements, and upcoming events.
         </ComingSoonText>
         <SubscribeContainer>
-          <SubscribeForm>
+          <SubscribeForm onSubmit={handleSubmit}>
             <SubscribeInput 
               type="email" 
               placeholder="Enter your email for updates" 

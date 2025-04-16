@@ -75,11 +75,11 @@ const NavLink = styled(Link)`
   }
 `;
 
-const Header = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
+const Header: React.FC = () => {
+  const [isScrolled, setIsScrolled] = useState<boolean>(false);
 
   useEffect(() => {
-    const handleScroll = () => {
+    const handleScroll = (): void => {
       if (window.scrollY > 50) {
         setIsScrolled(true);
       } else {

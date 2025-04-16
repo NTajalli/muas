@@ -108,7 +108,7 @@ const BottomText = styled.div`
   font-size: 0.9rem;
 `;
 
-const Footer = () => {
+const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
   
   return (
